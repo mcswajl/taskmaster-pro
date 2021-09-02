@@ -73,7 +73,7 @@ $("#task-form-modal .btn-primary").click(function() {
     $("#task-form-modal").modal("hide");
 
     // save in tasks array
-    tasks.toDo.push({
+    tasks.toDo.push( {
       text: taskText,
       date: taskDate
     });
@@ -82,7 +82,74 @@ $("#task-form-modal .btn-primary").click(function() {
   }
 });
 
-// remove all tasks
+// task text was clicked
+$(".list-group").on("click", "p", function() {
+  // get current text of p element
+  var text = $(this)
+    .text()
+    .trim();
+
+  // replace p element with a new textarea
+  var textInput = $("<textarea>").addClass("form-control").val(text);
+  $(this).replaceWith(textInput);
+
+  // auto focus new element
+  textInput.trigger("focus");
+});
+
+$(".list-group").on("blur", "textarea", function(){
+  var text = $(this)
+  .val()
+  .trim();
+
+  var status = $(this)
+  .closest(".list-group")
+  .attr("id")
+  .replace("list-", "");
+
+  var index = $(this)
+  .closest(".list-group")
+  .index();
+  tasks[status][index].test = text;
+  saveTasks();
+
+  var taskP = $("<p>")
+  .addClass("m-1")
+  .text(text);
+
+  $(this).replaceWith(taskP);
+});
+
+$(".list-group").on("click", "span", function() {
+  var date = $(this)
+  .text()
+  .trim();
+
+  var dateInput = $("<input>")
+  .atr("type", "text")
+  .addClass("form-contol")
+  .val(date);
+  $(this).replaceWith(dateInput);
+  dateInput.trigger("foucs");
+})
+
+$(".list-group").on("blur", "input[type='text']", function() {
+  var date = $(this).val();
+
+  
+  var status = $(this)
+    .closest(".list-group")
+    .attr("id")
+    .replace("list-", "");
+  var index = $(this)
+    .closest(".list-group-item")
+    .index();
+
+  
+  tasks[status][index].date = date;
+  saveTasks();
+
+
 $("#remove-tasks").on("click", function() {
   for (var key in tasks) {
     tasks[key].length = 0;
@@ -94,4 +161,4 @@ $("#remove-tasks").on("click", function() {
 // load tasks for the first time
 loadTasks();
 
-
+})
